@@ -1,0 +1,26 @@
+Project Title: Lamport One-Time Signatures File Signing CLI Tool
+
+This project creates a command-line tool which verifies file integrity and authenticity with Lamport one-time signatures. 
+The tool is written completely in C, eschewing the use of any external cryptography libraries. 
+The central purpose is to demonstrate the embedding of a hash-based signature scheme within a real-world application.
+
+In essence, the project makes use of the Lamport one-time signature scheme. 
+Unlike RSA or ECDSA, Lamport signatures only depend on cryptographic hash functions and random number generators. 
+The project features a bespoke self-contained SHA-256 module (based on FIPS 180-4) for the purpose of producing 32-byte digests. 
+These digests then inform the selection of pre-computed random bit strings that comprise the private key.
+A Lamport key pair is comprised of two arrays, each containing 256 random 32-byte strings, with the public key being derived by hashing each corresponding private key string.
+
+The application software features three primary functions that can be accessed via its command-line interface (CLI): key generation, file signing, and signature verification.
+Using the key generation function, the application creates a private key and an associated public key file. 
+The signing function takes as input a file, computes its SHA-256 hash, and then produces a signature by choosing a pre-image from each component of the key pair based on the hash bits. 
+This produced signature is then stored in another file.
+Finally, the verification function rehashes the file and utilizes the stored public key to verify the integrity of the signature, thus ensuring the file has not been altered. 
+Particular care has been taken in the use of secure random number generation from system‑available resources (e.g., /dev/urandom on Unix) to provide cryptographic security. 
+The project also focuses on correct file‑I/O handling and error checking, so it is robust in a production environment.
+
+This project is also an exercise in education and a working demonstration of secure digital signatures. 
+Although Lamport signatures are one-time signatures, in which a fresh key pair has to be created for each signature, 
+the idea nicely illustrates how cryptographic building blocks may be combined to achieve non-repudiation and integrity. 
+The source code, in ANSI C and compiled from a Makefile, is intended to be modularized in order to encourage testing and future development.
+
+For more details on Lamport signatures, visit Wikipedia's Lamport Signature page. For SHA-256 specifications, visit NIST FIPS 180-4.
