@@ -2,13 +2,15 @@
 
 // Callback functions
 void on_generate(GtkWidget *widget, gpointer data) {
-    GtkWidget *msg = gtk_message_dialog_new(GTK_WINDOW(data),
+  GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(window),
                                             GTK_DIALOG_MODAL,
                                             GTK_MESSAGE_INFO,
                                             GTK_BUTTONS_OK,
-                                            "Keys generated successfully!");
-    gtk_dialog_run(GTK_DIALOG(msg));
-    gtk_widget_destroy(msg);
+                                            "Keys generated successfully!\nPrivate Key: %s\nPublic Key: %s",
+                                            private_key_path,
+                                            public_key_path);
+gtk_dialog_run(GTK_DIALOG(dialog));
+gtk_widget_destroy(dialog);
 }
 
 void on_sign(GtkWidget *widget, gpointer data) {
