@@ -5,35 +5,38 @@ CFLAGS    := -Wall -Wextra -I. $(PKG_CFLAGS)
 LDFLAGS   := $(PKG_LDFLAGS)
 BIN_DIR   := bin
 
-# Common sources
+# Common code
 COMMON_SRCS := sha256.c lamport.c utils.c
 COMMON_OBJS := $(COMMON_SRCS:.c=.o)
 
 # CLI
-CLI_SRCS    := cli.c
-CLI_OBJS    := $(CLI_SRCS:.c=.o)
-CLI_TARGET  := $(BIN_DIR)/file-sign
+CLI_SRCS   := cli.c
+CLI_OBJS   := $(CLI_SRCS:.c=.o)
+CLI_TARGET := $(BIN_DIR)/file-sign
 
 # GUI
-GUI_SRCS    := file_sign_gui.c
-GUI_OBJS    := $(GUI_SRCS:.c=.o)
-GUI_TARGET  := $(BIN_DIR)/file-sign-gui
+GUI_SRCS   := file_sign_gui.c
+GUI_OBJS   := $(GUI_SRCS:.c=.o)
+GUI_TARGET := $(BIN_DIR)/file-sign-gui
 
 .PHONY: all clean
 
 all: $(CLI_TARGET) $(GUI_TARGET)
 
+# Build CLI
 $(CLI_TARGET): $(COMMON_OBJS) $(CLI_OBJS)
-<TAB>@mkdir -p $(BIN_DIR)
-<TAB>$(CC) $(CFLAGS) $^ -o $@
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
 
+# Build GUI (link GTK+)
 $(GUI_TARGET): $(COMMON_OBJS) $(GUI_OBJS)
-<TAB>@mkdir -p $(BIN_DIR)
-<TAB>$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
+# Compile any .c → .o
 %.o: %.c
-<TAB>$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-<TAB>rm -f $(COMMON_OBJS) $(CLI_OBJS) $(GUI_OBJS)
-<TAB>rm -rf $(BIN_DIR)
+	rm -f $(COMMON_OBJS) $(CLI_OBJS) $(GUI_OBJS)
+	rm -rf $(BIN_DIR)
