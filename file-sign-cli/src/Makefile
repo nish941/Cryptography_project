@@ -1,35 +1,42 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -I. $(shell pkg-config --cflags gtk+-3.0)
-LDFLAGS = $(shell pkg-config --libs gtk+-3.0)
+CC        := gcc
+PKG_CFLAGS := $(shell pkg-config --cflags gtk+-3.0)
+PKG_LDFLAGS:= $(shell pkg-config --libs   gtk+-3.0)
+CFLAGS    := -Wall -Wextra -I. $(PKG_CFLAGS)
+LDFLAGS   := $(PKG_LDFLAGS)
+BIN_DIR   := bin
 
-SRCS_COMMON = sha256.c lamport.c utils.c
-OBJS_COMMON = $(SRCS_COMMON:.c=.o)
+# Sources
+COMMON_SRCS := sha256.c lamport.c utils.c
+CLI_SRCS    := cli.c
+GUI_SRCS    := file_sign_gui.c
 
-SRCS_CLI = $(SRCS_COMMON) cli.c
-OBJS_CLI = $(SRCS_CLI:.c=.o)
+# Objects
+COMMON_OBJS := $(COMMON_SRCS:.c=.o)
+CLI_OBJS    := $(CLI_SRCS:.c=.o)
+GUI_OBJS    := $(GUI_SRCS:.c=.o)
 
-SRCS_GUI = $(SRCS_COMMON) file_sign_gui.c
-OBJS_GUI = $(SRCS_GUI:.c=.o)
-
-BIN_DIR = bin
-TARGET_CLI = $(BIN_DIR)/file-sign
-TARGET_GUI = $(BIN_DIR)/file-sign-gui
+# Targets
+CLI_TARGET  := $(BIN_DIR)/file-sign
+GUI_TARGET  := $(BIN_DIR)/file-sign-gui
 
 .PHONY: all clean
 
-all: $(TARGET_CLI) $(TARGET_GUI)
+all: $(CLI_TARGET) $(GUI_TARGET)
 
-$(TARGET_CLI): $(OBJS_CLI)
+# Build the CLI executable
+$(CLI_TARGET): $(COMMON_OBJS) $(CLI_OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TARGET_GUI): $(OBJS_GUI)
+# Build the GUI executable
+$(GUI_TARGET): $(COMMON_OBJS) $(GUI_OBJS)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
+# Generic rule for .o files
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o
+	rm -f $(COMMON_OBJS) $(CLI_OBJS) $(GUI_OBJS)
 	rm -rf $(BIN_DIR)
