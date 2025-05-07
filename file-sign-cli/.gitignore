@@ -14,8 +14,10 @@ file_sign_gui.o
 private.key
 public.key
 
-# Ignore bin directory
-/bin/
+
+# Ignore binary executables
+bin/
+file_sign_gui
 
 # Ignore other OS or editor-specific files
 *~
