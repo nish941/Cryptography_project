@@ -1,13 +1,23 @@
-# Object files
+# Ignore build artifacts and binaries
 *.o
+*.out
+*.exe
+*.so
+*.a
+*.dll
 
-# Executables
-file-sign
+# Ignore compiled GUI binaries
 file_sign_gui
+file_sign_gui.o
 
-# Build directories
-bin/
-
-# Key files
+# Ignore key files
 private.key
 public.key
+
+# Ignore bin directory
+/bin/
+
+# Ignore other OS or editor-specific files
+*~
+.DS_Store
+Thumbs.db
