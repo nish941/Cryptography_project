@@ -9,6 +9,7 @@ static char *public_key_path = "public.key";
 
 // Callback: Generate Keys
 void on_generate(GtkWidget *widget, gpointer data) {
+    (void)widget;
     lamport_keypair_t kp;
     if (lamport_keygen(&kp) != 0) {
         GtkWidget *err = gtk_message_dialog_new(GTK_WINDOW(data), GTK_DIALOG_MODAL,
@@ -29,6 +30,7 @@ void on_generate(GtkWidget *widget, gpointer data) {
 
 // Callback: Sign File
 void on_sign(GtkWidget *widget, gpointer data) {
+    (void)widget;
     GtkWidget *open = gtk_file_chooser_dialog_new("Select File to Sign",
         GTK_WINDOW(data), GTK_FILE_CHOOSER_ACTION_OPEN,
         "_Cancel", GTK_RESPONSE_CANCEL,
@@ -72,6 +74,7 @@ void on_sign(GtkWidget *widget, gpointer data) {
 
 // Callback: Verify Signature
 void on_verify(GtkWidget *widget, gpointer data) {
+    (void)widget;
     // Choose input file
     GtkWidget *open = gtk_file_chooser_dialog_new("Select File to Verify",
         GTK_WINDOW(data), GTK_FILE_CHOOSER_ACTION_OPEN,
