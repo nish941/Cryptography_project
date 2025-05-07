@@ -1,0 +1,13 @@
+# Object files
+*.o
+
+# Executables
+file-sign
+file_sign_gui
+
+# Build directories
+bin/
+
+# Key files
+private.key
+public.key
