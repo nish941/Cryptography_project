@@ -3,11 +3,11 @@ CFLAGS = -Wall -Wextra -I. -pthread $(shell pkg-config --cflags gtk+-3.0)
 LDFLAGS_CLI = 
 LDFLAGS_GUI = $(shell pkg-config --libs gtk+-3.0)
 
-# CLI sources
+# CLI sources (no GUI code)
 SRCS_CLI = sha256.c lamport.c utils.c cli.c
 OBJS_CLI = $(SRCS_CLI:.c=.o)
 
-# GUI sources
+# GUI sources (no CLI code)
 SRCS_GUI = sha256.c lamport.c utils.c file_sign_gui.c
 OBJS_GUI = $(SRCS_GUI:.c=.o)
 
