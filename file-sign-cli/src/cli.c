@@ -35,20 +35,25 @@ int main(int argc, char *argv[]) {
         }
         printf("Keypair generated and saved successfully.\n");
     } 
-    else if (strcmp(argv[1], "--sign") == 0) {
-        if (argc != 5) {
-            print_usage();
-            return 1;
-        }
-        lamport_keypair_t kp;
-        if (load_keypair(argv[2], NULL, &kp) != 0) {
-            fprintf(stderr, "Error: Loading private key failed.\n");
-            return 1;
-        }
-
+    else if (strcmp(argv[1], "--sign") == 0 && argc == 5) {
+    lamport_keypair_t kp;
+    if (load_private_key(argv[2], &kp) != 0) {  // FIXED: Use load_private_key
+        fprintf(stderr, "Error: Loading private key failed.\n");
+        return 1;
+    }
+        uint8_t *file_data = NULL;
+    size_t file_length;  // Added out_len parameter
+    if (read_file(argv[3], &file_data, &file_length) < 0) {  // FIXED: Add 3rd arg
+        fprintf(stderr, "Error: Reading input file failed.\n");
+        return 1;
+    }
         // Read input file data
         uint8_t *file_data;
-        ssize_t file_length = read_file(argv[3], &file_data);
+        size_t file_length;
+if (read_file(argv[3], &file_data, &file_length) < 0) {
+    fprintf(stderr, "Error: Reading file failed.\n");
+    return 1;
+}
         if (file_length < 0) {
             fprintf(stderr, "Error: Reading input file failed.\n");
             return 1;
