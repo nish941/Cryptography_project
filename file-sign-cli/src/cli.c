@@ -35,44 +35,33 @@ int main(int argc, char *argv[]) {
         }
         printf("Keypair generated and saved successfully.\n");
     } 
-    else if (strcmp(argv[1], "--sign") == 0 && argc == 5) {
-    lamport_keypair_t kp;
-    if (load_private_key(argv[2], &kp) != 0) {  // FIXED: Use load_private_key
-        fprintf(stderr, "Error: Loading private key failed.\n");
-        return 1;
-    }
+    else if (strcmp(argv[1], "--sign") == 0) {
+        if (argc != 5) {
+            print_usage();
+            return 1;
+        }
+        lamport_keypair_t kp;
+        if (load_private_key(argv[2], &kp) != 0) {
+            fprintf(stderr, "Error: Loading private key failed.\n");
+            return 1;
+        }
+
         uint8_t *file_data = NULL;
-    size_t file_length;  // Added out_len parameter
-    if (read_file(argv[3], &file_data, &file_length) < 0) {  // FIXED: Add 3rd arg
-        fprintf(stderr, "Error: Reading input file failed.\n");
-        return 1;
-    }
-        // Read input file data
-        uint8_t *file_data;
         size_t file_length;
-if (read_file(argv[3], &file_data, &file_length) < 0) {
-    fprintf(stderr, "Error: Reading file failed.\n");
-    return 1;
-}
-        if (file_length < 0) {
+        if (read_file(argv[3], &file_data, &file_length) < 0) {
             fprintf(stderr, "Error: Reading input file failed.\n");
             return 1;
         }
 
-        // Compute SHA-256 hash of input data
         uint8_t file_hash[SHA256_BLOCK_SIZE];
         sha256(file_data, file_length, file_hash);
         free(file_data);
 
         uint8_t signature[LAMPORT_N][SHA256_BLOCK_SIZE];
-        if (lamport_sign(&kp, file_hash, signature) != 0) {
-            fprintf(stderr, "Error: Signing failed.\n");
-            return 1;
-        }
+        lamport_sign(&kp, file_hash, signature);
 
-        // Write signature to file
-        if (write_file(argv[4], (uint8_t*)signature, sizeof(signature)) != 0) {
-            fprintf(stderr, "Error: Writing signature failed.\n");
+        if (save_signature(argv[4], signature) != 0) {
+            fprintf(stderr, "Error: Saving signature failed.\n");
             return 1;
         }
         printf("File signed successfully.\n");
@@ -83,15 +72,15 @@ if (read_file(argv[3], &file_data, &file_length) < 0) {
             return 1;
         }
         lamport_keypair_t kp;
-        if (load_keypair(NULL, argv[2], &kp) != 0) {
+        if (load_public_key(argv[2], &kp) != 0) {
             fprintf(stderr, "Error: Loading public key failed.\n");
             return 1;
         }
 
-        // Read input file data
-        uint8_t *file_data;
-        ssize_t file_length = read_file(argv[3], &file_data);
-        if (file_length < 0) {
+        // Read and hash file
+        uint8_t *file_data = NULL;
+        size_t file_length;
+        if (read_file(argv[3], &file_data, &file_length) < 0) {
             fprintf(stderr, "Error: Reading input file failed.\n");
             return 1;
         }
@@ -99,11 +88,10 @@ if (read_file(argv[3], &file_data, &file_length) < 0) {
         sha256(file_data, file_length, file_hash);
         free(file_data);
 
-        // Read the signature from file
+        // Load signature
         uint8_t signature[LAMPORT_N][SHA256_BLOCK_SIZE];
-        ssize_t sig_size = read_file(argv[4], (uint8_t**)&signature);
-        if (sig_size != sizeof(signature)) {
-            fprintf(stderr, "Error: Reading signature file failed.\n");
+        if (load_signature(argv[4], signature) != 0) {
+            fprintf(stderr, "Error: Loading signature failed.\n");
             return 1;
         }
 
