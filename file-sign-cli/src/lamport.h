@@ -11,7 +11,8 @@ typedef struct {
 } lamport_keypair_t;
 
 int lamport_keygen(lamport_keypair_t *kp);
-int load_keypair(const char *path, lamport_keypair_t *kp);
+int load_keypair(const char *priv_path, const char *pub_path, lamport_keypair_t *kp);
+
 
 int lamport_sign(const lamport_keypair_t *kp,
 		const uint8_t hash[SHA256_BLOCK_SIZE],
