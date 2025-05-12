@@ -30,7 +30,7 @@ int lamport_sign(const lamport_keypair_t *kp, const uint8_t hash[SHA256_BLOCK_SI
 
 // Verification
 int lamport_verify(const lamport_keypair_t *kp, const uint8_t hash[SHA256_BLOCK_SIZE], 
-                const uint8_t signature[LAMPORT_N][SHA256_BLOCK_SIZE]) {
+                   const uint8_t signature[LAMPORT_N][SHA256_BLOCK_SIZE]) {
     uint8_t temp[SHA256_BLOCK_SIZE];
     for (int i = 0; i < LAMPORT_N; ++i) {
         int bit = (hash[i/8] >> (7 - (i%8))) & 1;
@@ -39,8 +39,9 @@ int lamport_verify(const lamport_keypair_t *kp, const uint8_t hash[SHA256_BLOCK_
             return 0; // Verification failed
         }
     }
-    return -1; // Verification succeeded
+    return 1; // Verification succeeded
 }
+
 
 // Save keypair to files
 int save_keypair(const char *priv_path, const char *pub_path, const lamport_keypair_t *kp) {
